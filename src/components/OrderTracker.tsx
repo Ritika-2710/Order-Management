@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Order, OrderStatus } from '../types';
+import React from 'react';
+import { OrderStatus } from '../types';
 import { STATUS_STEPS } from '../constants';
-import { api } from '../api';
+import { useOrderTracking } from '../hooks/useOrderTracking';
 import { Check, Clock, Truck, MapPin } from 'lucide-react';
 
 interface OrderTrackerProps {
@@ -9,29 +9,20 @@ interface OrderTrackerProps {
 }
 
 export const OrderTracker: React.FC<OrderTrackerProps> = ({ orderId }) => {
-  const [order, setOrder] = useState<Order | null>(null);
+  const { order, error, isLoading } = useOrderTracking(orderId);
 
-  useEffect(() => {
-    let intervalId: number;
-
-    const fetchOrder = async () => {
-      const data = await api.getOrder(orderId);
-      if (data) {
-        setOrder({ ...data }); // Spread to ensure new reference for React
-      }
-    };
-
-    fetchOrder();
-    // Poll for updates every 2 seconds
-    intervalId = window.setInterval(fetchOrder, 2000);
-
-    return () => window.clearInterval(intervalId);
-  }, [orderId]);
-
-  if (!order) {
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
+      </div>
+    );
+  }
+
+  if (error || !order) {
+    return (
+      <div className="text-center p-8 bg-red-50 text-red-600 rounded-xl">
+        <p>{error || 'Order not found'}</p>
       </div>
     );
   }
@@ -85,7 +76,7 @@ export const OrderTracker: React.FC<OrderTrackerProps> = ({ orderId }) => {
 
           {/* Active Progress Bar */}
           <div
-            className="absolute top-5 left-0 h-1 bg-brand-500 rounded-full -z-10 transition-all duration-1000 ease-in-out"
+            className={`absolute top-5 left-0 h-1 bg-brand-500 rounded-full -z-10 transition-all duration-1000 ease-in-out`}
             style={{ width: `${(currentStep / (STATUS_STEPS.length - 1)) * 100}%` }}
           ></div>
 

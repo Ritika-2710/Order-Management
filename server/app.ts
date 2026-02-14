@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import routes from './routes.js';
 
@@ -11,7 +11,7 @@ app.use(express.json());
 app.use('/api', routes);
 
 // Error handling middleware
-app.use((err, req, res, next) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     console.error(err.stack);
     res.status(500).json({ error: 'Something went wrong!' });
 });

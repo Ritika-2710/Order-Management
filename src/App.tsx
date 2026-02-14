@@ -5,7 +5,7 @@ import { CartDrawer } from './components/CartDrawer';
 import { CheckoutForm } from './components/CheckoutForm';
 import { OrderTracker } from './components/OrderTracker';
 import { MenuItem, CartItem, ViewState, UserDetails } from './types';
-import { api } from './api';
+import { apiService } from './services/apiService';
 
 const App: React.FC = () => {
   const [view, setView] = useState<ViewState>('MENU');
@@ -19,7 +19,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const loadMenu = async () => {
       try {
-        const menu = await api.getMenu();
+        const menu = await apiService.getMenu();
         setItems(menu);
       } catch (error) {
         console.error("Failed to load menu", error);
@@ -60,7 +60,7 @@ const App: React.FC = () => {
   const handlePlaceOrder = async (userDetails: UserDetails) => {
     setIsSubmittingOrder(true);
     try {
-      const order = await api.placeOrder(cartItems, userDetails);
+      const order = await apiService.placeOrder(cartItems, userDetails);
       setActiveOrderId(order.id);
       setCartItems([]); // Clear cart
       setView('ORDER_TRACKING');

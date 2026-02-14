@@ -21,3 +21,5 @@ export const orderSchema = z.object({
             .refine(val => /^\d{10}$/.test(val), 'Enter a valid 10-digit phone number')
     })
 });
+
+export type OrderInput = z.infer<typeof orderSchema>;
