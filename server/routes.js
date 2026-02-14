@@ -1,8 +1,7 @@
-import express from 'express';
-import * as store from './store.js';
+const express = require('express');
+const store = require('./store');
 
 const router = express.Router();
-
 /**
  * GET /api/menu
  * Retrieves the list of available menu items.
