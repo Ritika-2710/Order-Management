@@ -1,7 +1,3 @@
-import app from './app.js';
+import app from '../server/app.js';
 
-const PORT = process.env.PORT || 3002;
-
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+export default app;
