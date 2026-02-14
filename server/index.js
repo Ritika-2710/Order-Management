@@ -1,7 +1,3 @@
-import app from './app.js';
+const app = require('../server/app');
 
-const PORT = 3002;
-
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+module.exports = app;
