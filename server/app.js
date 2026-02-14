@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 // API Routes
-app.use('/', routes);
+app.use('/api', routes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
