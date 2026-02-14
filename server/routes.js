@@ -1,6 +1,9 @@
 import express from 'express';
 import * as store from './store.js';
 
+import { validate } from './middleware/validator.js';
+import { orderSchema } from './validation.js';
+
 const router = express.Router();
 
 /**
@@ -19,20 +22,11 @@ router.get('/menu', (req, res) => {
 /**
  * POST /api/orders
  * Creates a new order.
- * Expects JSON body with `items` and `user` details.
+ * Uses Zod middleware for strict schema validation.
  */
-router.post('/orders', (req, res) => {
+router.post('/orders', validate(orderSchema), (req, res) => {
     try {
         const { items, user } = req.body;
-
-        if (!items || !Array.isArray(items) || items.length === 0) {
-            return res.status(400).json({ error: 'Order must contain items' });
-        }
-
-        if (!user || !user.name || !user.address || !user.phone) {
-            return res.status(400).json({ error: 'Valid user details are required' });
-        }
-
         const order = store.createOrder(items, user);
         res.status(201).json(order);
     } catch (error) {
